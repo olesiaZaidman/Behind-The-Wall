@@ -6,8 +6,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 500f; // Adjust this value to control the player's movementToClick speed
-    Rigidbody rb;
-    // float moveHorizontal;
+
+   float moveHorizontal;
     Vector3 targetPosition;
     Vector3 mousePositionScreen;
     Vector3 movementToClick;
@@ -16,19 +16,86 @@ public class PlayerController : MonoBehaviour
     bool selected = false;
     Color defaultColor = Color.yellow;
     Color colorSelected = Color.green;
+
+    Rigidbody rb;
     Renderer rend;
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        mainCamera = Camera.main;
-        rend = GetComponent<Renderer>();
+        FindCamera();
+        //  InitializeRigidbodyRendererComponents();
+        InitializeComponent<Rigidbody>();
+        InitializeComponent<Renderer>();
         SetGameObjectColor(defaultColor);
     }
 
     void Update()
     {
-        HandleMouseClickInput();
+      //  HandleMouseClickInput();
+        HandleArrowsInput();
     }
+
+    void FixedUpdate()
+    {
+      //  MoveCharacterToMouseClick();
+        MoveCharacter();
+    }
+
+
+
+    void InitializeComponent<T>() where T : Component
+    {
+        T component = GetComponent<T>();
+
+        if (component == null)
+        {
+            Debug.LogError($"Component of type {typeof(T)} not found on the GameObject.");
+        }
+        else
+        {
+            if (component is Rigidbody rbComponent)
+            {
+                rb = rbComponent;
+            }
+            else if (component is Renderer rendComponent)
+            {
+                rend = rendComponent;
+            }
+            // We can add more conditions for other components if needed
+            // else if (component is YourComponentType yourComponent)
+            // {
+            //     // Handle your component initialization here
+            // }
+        }
+    }
+
+    // void InitializeRigidbodyRendererComponents()
+    //{
+    //    rb = GetComponent<Rigidbody>();
+
+    //    if (rb == null)
+    //    {
+    //        Debug.LogError("Rigidbody component not found on the GameObject.");
+    //    }
+
+    //    rend = GetComponent<Renderer>();
+
+    //    if (rend == null)
+    //    {
+    //        Debug.LogError("Renderer component not found on the GameObject.");
+    //    }
+    //}
+
+    void FindCamera()
+    {
+        mainCamera = Camera.main;
+
+        if (mainCamera == null)
+        {
+            Debug.Log("Camera is missing");
+        }
+    }
+
+
     public void SetGameObjectColor(Color color)
     {
         //Renderer renderer = gameObject.GetComponent<Renderer>();
@@ -65,10 +132,6 @@ public class PlayerController : MonoBehaviour
         SetGameObjectColor(colorSelected);
     }
 
-    void FixedUpdate()
-    {
-        MoveCharacterToMouseClick();
-    }
 
     void MoveCharacterToMouseClick()
     {
@@ -86,15 +149,15 @@ public class PlayerController : MonoBehaviour
 
 
 
-    //void HandleArrowsInput()
-    //{
-    //      moveHorizontal = Input.GetAxis("Horizontal");
-    //}
+    void HandleArrowsInput()
+    {
+        moveHorizontal = Input.GetAxis("Horizontal");
+    }
 
-    //void MoveCharacter()
-    //{
-    //    Vector3 movementToClick = new Vector3(moveHorizontal * moveSpeed * Time.deltaTime, rb.velocity.y, rb.velocity.z);
-    //    rb.velocity = movementToClick;
-    //}
+    void MoveCharacter() 
+    {
+        Vector3 movementToClick = new Vector3(moveHorizontal * moveSpeed * Time.deltaTime, rb.velocity.y, rb.velocity.z);
+        rb.velocity = movementToClick;
+    }
 
 }
