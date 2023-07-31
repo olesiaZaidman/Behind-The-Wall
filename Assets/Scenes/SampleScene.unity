@@ -4440,36 +4440,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4000013715428728, guid: 16aa2c45fc44c874bba82ee18c09e866, type: 3}
   m_PrefabInstance: {fileID: 1058818905}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1074186061 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7124570782679649542, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-  m_PrefabInstance: {fileID: 7124570783753013835}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1074186063 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-  m_PrefabInstance: {fileID: 7124570783753013835}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1074186061}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1074186066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1074186061}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78578804db164f840b662e5dad0f49d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameObjectUI: {fileID: 2072073378784118119}
-  myButton: {fileID: 1074186063}
 --- !u!1001 &1074771609
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8711,17 +8681,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4000012016014000, guid: 3993d86c677779540acc923863aaeb31, type: 3}
   m_PrefabInstance: {fileID: 1477253087}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2072073378784118119 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9087970079739547436, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-  m_PrefabInstance: {fileID: 7124570783753013835}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d17926856723854d8ca0c11cb1c41f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &7124570783753013835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8730,32 +8689,44 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      propertyPath: m_Colors.m_DisabledColor.a
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 1074186066}
-    - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
+      propertyPath: m_Colors.m_DisabledColor.b
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: ResetButtonColor
+      propertyPath: m_Colors.m_DisabledColor.g
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: ButtonClickHandler, Assembly-CSharp
+      propertyPath: m_Colors.m_DisabledColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0.89520264
+      objectReference: {fileID: 0}
+    - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7124570782679649563, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7124570782679649563, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7124570782679649563, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8739237194768661185, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
       propertyPath: m_Pivot.x
@@ -8845,13 +8816,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas_InteractionButton_GameUI
       objectReference: {fileID: 0}
-    - target: {fileID: 9087970079739547436, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-      propertyPath: myButton
-      value: 
-      objectReference: {fileID: 1074186063}
-    - target: {fileID: 9087970079739547436, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
-      propertyPath: fillDuration
-      value: 2
+    - target: {fileID: 8739237195444585457, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
+      propertyPath: m_FillAmount
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}

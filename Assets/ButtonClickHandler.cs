@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ButtonClickHandler : MonoBehaviour
@@ -43,9 +44,18 @@ public class ButtonClickHandler : MonoBehaviour
         //   updatedColorBlock.selectedColor = normalColorBlock.normalColor;
         //  myButton.colors = updatedColorBlock;
 
+        //   myButton.transition = Selectable.Transition.ColorTint;
+        EventSystem.current.SetSelectedGameObject(null);
+
 
 
     }
+
+    //public void OnSelect(BaseEventData eventData)
+    //{
+    //    Debug.Log(this.gameObject.name + " was selected");
+    //}
+
 
     public void Deactivate()
     {

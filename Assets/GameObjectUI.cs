@@ -55,7 +55,7 @@ public class GameObjectUI : MonoBehaviour
         timer = 0f;
         startFill = 0f;
         imageToFill.fillAmount = startFill;
-        imageToFill.color = Color.white;
+       // imageToFill.color = Color.white;
 
     }
 
