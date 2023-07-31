@@ -17,8 +17,6 @@ public class BackgroundClickHandler : MonoBehaviour
            // DeselectObjectSelected();
             DesselectPlayerIfClickedOntOnHisLayer();
         }
-
-
     }
 
      void DesselectPlayerIfClickedOntOnHisLayer()
@@ -62,10 +60,10 @@ public class BackgroundClickHandler : MonoBehaviour
 
     void DeselectObjectSelected()
     {
-        // Deselect the currently selected object (if any)
-        //  ObjectSelector.selectedObject?.GetComponent<ObjectSelector>()?.Deselect();
+        // Deactivate the currently selected object (if any)
+        //  ObjectSelector.selectedObject?.GetComponent<ObjectSelector>()?.Deactivate();
 
-        // Deselect the player if it was selected
+        // Deactivate the player if it was selected
         Debug.Log("Left Mouse Clicked");
         if (playerSelector != null)
         {
