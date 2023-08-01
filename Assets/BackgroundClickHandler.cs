@@ -60,10 +60,10 @@ public class BackgroundClickHandler : MonoBehaviour
 
     void DeselectObjectSelected()
     {
-        // Deactivate the currently selected object (if any)
-        //  ObjectSelector.selectedObject?.GetComponent<ObjectSelector>()?.Deactivate();
+        // DectivateButtonWithColor the currently selected object (if any)
+        //  ObjectSelector.selectedObject?.GetComponent<ObjectSelector>()?.DectivateButtonWithColor();
 
-        // Deactivate the player if it was selected
+        // DectivateButtonWithColor the player if it was selected
         Debug.Log("Left Mouse Clicked");
         if (playerSelector != null)
         {

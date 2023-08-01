@@ -6,26 +6,12 @@ using UnityEngine.UI;
 
 public class ButtonClickHandler : MonoBehaviour
 {
-    public GameObjectUI gameObjectUI;
-    public Button myButton;
-    private ColorBlock normalColorBlock;
-
+    ImageFillOverTime imageFillOverTime;
+    [SerializeField] Button myButton;
     void Start()
     {
-        normalColorBlock = myButton.colors; 
-        // Add an event listener to the button to handle the click
-
-        //  myButton.onClick.AddListener(OnButtonClick);
-
+        imageFillOverTime = GetComponent<ImageFillOverTime>();
     }
-
-    //void OnButtonClick()
-    //{
-    //    // Call the FillImageOverTime method in ImageFillOverTime script
-    //    gameObjectUI.FillImageOverTime();
-    //}
-
-  
 
     public void ResetButtonColor()
     {
@@ -35,35 +21,19 @@ public class ButtonClickHandler : MonoBehaviour
     private IEnumerator ResetButtonColorCoroutine()
     {
         // Wait until the image fill is complete
-        yield return new WaitUntil(() => gameObjectUI.IsFillComplete);
+        yield return new WaitUntil(() => imageFillOverTime.IsFillComplete);
+        //Deselect the button:
 
-        //  myButton.image.color = Color.white;
-        // myButton.colors = normalColorBlock;
-        //Color.normalColor; ColorBlock.defaultColorBlock;
-        //  ColorBlock updatedColorBlock = myButton.colors;
-        //   updatedColorBlock.selectedColor = normalColorBlock.normalColor;
-        //  myButton.colors = updatedColorBlock;
-
-        //   myButton.transition = Selectable.Transition.ColorTint;
         EventSystem.current.SetSelectedGameObject(null);
-
-
-
     }
 
-    //public void OnSelect(BaseEventData eventData)
-    //{
-    //    Debug.Log(this.gameObject.name + " was selected");
-    //}
 
-
-    public void Deactivate()
+    public void DeactivateButton()
     {
         myButton.interactable = false;
     }
 
-    // Method to select the button
-    public void Activate()
+    public void ActivateButton()
     {
         myButton.interactable = true;
     }

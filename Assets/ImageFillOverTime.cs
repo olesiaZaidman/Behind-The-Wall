@@ -3,10 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class GameObjectUI : MonoBehaviour
+public class ImageFillOverTime : MonoBehaviour
 {
-    public Image imageToFill;
     [Range(0.5f, 10f)]  public float fillDuration = 2f;
+    float delayBeforeDeactivate = 0.2f;
+
+
+    [SerializeField] Image imageToFill;
 
     float startFill = 0f;
     float targetFill = 1f;
@@ -18,7 +21,14 @@ public class GameObjectUI : MonoBehaviour
         get { return isFillComplete; }
     }
 
-    public void FillImageOverTime()
+    UIInteractionManager uiManager;
+
+    void Start()
+    {
+        uiManager = GetComponent<UIInteractionManager>();    
+    }
+
+    public void StartImageFillOverTime()
     {
         // Start the image fill coroutine
         StartCoroutine(FillImageOverTimeCoroutine());
@@ -27,6 +37,12 @@ public class GameObjectUI : MonoBehaviour
     private IEnumerator FillImageOverTimeCoroutine()
     {
         isFillComplete = false;
+
+        // Call ActivateButtonWithColor from UIInteractionManager
+        if (uiManager != null)
+        {
+            uiManager.ActivateButtonAndImageFillWithColor();
+        }
 
         while (timer < fillDuration)
         {
@@ -51,12 +67,15 @@ public class GameObjectUI : MonoBehaviour
 
     IEnumerator ResetFillImageOverTime()
    {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(delayBeforeDeactivate);
         timer = 0f;
         startFill = 0f;
         imageToFill.fillAmount = startFill;
-       // imageToFill.color = Color.white;
 
+        if (uiManager != null)
+        {
+            uiManager.DectivateButtonAndImageFillWithColor();
+        }
     }
 
 

@@ -58,12 +58,12 @@ public class ObjectSelector : MonoBehaviour
 
         if (selected)
         {
-            // Activate the object
+            // ActivateButtonWithColor the object
             SetGameObjectColor(colorSelected);
         }
         else
         {
-            // Deactivate the object
+            // DectivateButtonWithColor the object
             SetGameObjectColor(defaultColor);
         }
     }
@@ -104,20 +104,20 @@ public class ObjectSelector : MonoBehaviour
     //{
     //    if (selectedObject != gameObject)
     //    {
-    //        // Deactivate the current object (if any)
+    //        // DectivateButtonWithColor the current object (if any)
     //        DeselectCurrentObject();
 
-    //        // Activate the clicked object
+    //        // ActivateButtonWithColor the clicked object
     //        selectedObject = gameObject;
     //        SetGameObjectColor(colorSelected);
     //    }
     //}
 
-    //public void Deactivate()
+    //public void DectivateButtonWithColor()
     //{
     //    if (selectedObject == gameObject)
     //    {
-    //        // Deactivate the object
+    //        // DectivateButtonWithColor the object
     //        selectedObject = null;
     //        SetGameObjectColor(defaultColor);
     //    }
@@ -127,7 +127,7 @@ public class ObjectSelector : MonoBehaviour
     //{
     //    if (selectedObject != null)
     //    {
-    //        selectedObject.GetComponent<ObjectSelector>().Deactivate();
+    //        selectedObject.GetComponent<ObjectSelector>().DectivateButtonWithColor();
     //    }
     //}
 
