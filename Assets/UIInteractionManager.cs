@@ -21,28 +21,28 @@ public class UIInteractionManager : MonoBehaviour
         _i.color = _color;
     }
 
-    public void DectivateButtonAndImageFillWithColor() ////or DectivateButtonWithColor?
+    public void DectivateButtonAndImageFillWithDeafultColor() ////or DectivateButtonDeafultWithColor?
     {
         SetImageColor(imageFrame, defaultColor);
         SetImageColor(imageToFill, defaultColor);
         SetImageColor(imageButton, defaultColor);
     }
 
-    public void DectivateButtonAndImageFillWithColor(Color _colorDefault) ////or DectivateButtonWithColor? or DectivateButtonWithColor
+    public void DectivateButtonAndImageFillWithDeafultColor(Color _colorDefault) ////or DectivateButtonDeafultWithColor? or DectivateButtonDeafultWithColor
     {
         SetImageColor(imageFrame, _colorDefault);
         SetImageColor(imageToFill, _colorDefault);
         SetImageColor(imageButton, _colorDefault);
     }
 
-    public void ActivateButtonAndImageFillWithColor() ////or DectivateButtonWithColor?
+    public void ActivateButtonAndImageFillWithInteractionColor() ////or DectivateButtonDeafultWithColor?
     {
         SetImageColor(imageFrame, interactionColor);
         SetImageColor(imageToFill, interactionColor);
         SetImageColor(imageButton, interactionColor);
     }
 
-    public void ActivateButtonAndImageFillWithColor(Color _colorInteraction) ////or DectivateButtonWithColor? or DectivateButtonWithColor
+    public void ActivateButtonAndImageFillWithInteractionColor(Color _colorInteraction) ////or DectivateButtonDeafultWithColor? or DectivateButtonDeafultWithColor
     {
         SetImageColor(imageFrame, _colorInteraction);
         SetImageColor(imageToFill, _colorInteraction);
@@ -51,65 +51,65 @@ public class UIInteractionManager : MonoBehaviour
 
 
 
-    public Color GetColor(int i)
+    public Color GetInteractionColor()
     {
         return interactionColor;
     }
 
-    public void SetColor(Color _color)
+    public void SetInteractionColor(Color _color)
     {
         interactionColor = _color;
     }
 
-
-
-
-    /*EXTRA
-     
-    public void ActivateButtonWithColor() //or ActivateButtonWithColor?
+    public void ActivateButtonWithInteractionColor() //or ActivateButtonWithInteractionColor?
     {
         SetImageColor(imageButton, interactionColor);
     }
 
 
-    public void ActivateButtonWithColor(Color _colorInteraction) //or ActivateButtonWithColor? or ActivateButtonWithColor
+    public void ActivateButtonWithInteractionColor(Color _colorInteraction) //or ActivateButtonWithInteractionColor? or ActivateButtonWithInteractionColor
     {
         SetImageColor(imageButton, _colorInteraction);
     }
 
-    public void ActivateImageFillWithColor(Color _colorInteraction) //or ActivateButtonWithColor? or ActivateButtonWithColor
+    public void ActivateImageFillWithInteractionColor(Color _colorInteraction) //or ActivateButtonWithInteractionColor? or ActivateButtonWithInteractionColor
     {
         SetImageColor(imageFrame, _colorInteraction);
         SetImageColor(imageToFill, _colorInteraction);
     }
 
-    public void ActivateImageFillWithColor() //or ActivateButtonWithColor? or ActivateButtonWithColor
+    public void ActivateImageFillWithInteractionColor() //or ActivateButtonWithInteractionColor? or ActivateButtonWithInteractionColor
     {
         SetImageColor(imageFrame, interactionColor);
         SetImageColor(imageToFill, interactionColor);
     }
 
-    public void DectivateButtonWithColor(Color _colorDefault) ////or DectivateButtonWithColor? or DectivateButtonWithColor
+    public void DectivateButtonWithDeafultColor(Color _colorDefault) ////or DectivateButtonDeafultWithColor? or DectivateButtonDeafultWithColor
     {
         SetImageColor(imageButton, _colorDefault);
     }
 
-    public void DectivateButtonWithColor() ////or DectivateButtonWithColor?
+    public void DectivateButtonDeafultWithColor() ////or DectivateButtonDeafultWithColor?
     {
         SetImageColor(imageButton, defaultColor);
     }
 
-    public void DectivateImageFillWithColor(Color _colorDefault) ////or DectivateButtonWithColor? or DectivateButtonWithColor
+    public void DectivateImageFillWithDeafultColor(Color _colorDefault) ////or DectivateButtonDeafultWithColor? or DectivateButtonDeafultWithColor
     {
         SetImageColor(imageFrame, _colorDefault);
         SetImageColor(imageToFill, _colorDefault);
     }
 
-    public void DectivateImageFillWithColor() ////or DectivateButtonWithColor?
+    public void DectivateImageFillWithDeafultColor() ////or DectivateButtonDeafultWithColor?
     {
         SetImageColor(imageFrame, defaultColor);
         SetImageColor(imageToFill, defaultColor);
     }
+
+
+    /*EXTRA
+     
+   
 */
 
 }

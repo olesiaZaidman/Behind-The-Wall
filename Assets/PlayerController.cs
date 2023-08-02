@@ -16,6 +16,14 @@ public class PlayerController : MonoBehaviour
     Rigidbody rb;
 
 
+    bool isPerformingAction = false; // New property to indicate fill completion
+
+    public bool IsPerformingAction
+    {
+        get { return isPerformingAction; }
+        set { isPerformingAction = value; }
+    }
+
     void Start()
     {
         FindCamera();
@@ -39,14 +47,15 @@ public class PlayerController : MonoBehaviour
 
         //  HandleMouseClickInput();
         //   HandleArrowsInput();
-
     }
 
     void FixedUpdate()
         {
             //  MoveCharacterToMouseClick();
             MoveCharacter();
-        }
+
+   
+    }
 
 
 

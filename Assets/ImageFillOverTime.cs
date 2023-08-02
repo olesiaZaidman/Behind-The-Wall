@@ -7,42 +7,39 @@ public class ImageFillOverTime : MonoBehaviour
 {
     [Range(0.5f, 10f)]  public float fillDuration = 2f;
     float delayBeforeDeactivate = 0.2f;
-
-
     [SerializeField] Image imageToFill;
+    [SerializeField] Image imageFrame;
 
     float startFill = 0f;
     float targetFill = 1f;
     float timer = 0f;
-    private bool isFillComplete = false; // New property to indicate fill completion
+
+    bool isFillComplete = false; // New property to indicate fill completion
 
     public bool IsFillComplete
     {
         get { return isFillComplete; }
     }
 
-    UIInteractionManager uiManager;
+    bool isInInteraction = false; // New property to indicate fill completion
 
-    void Start()
+    public bool IsInInteraction
     {
-        uiManager = GetComponent<UIInteractionManager>();    
+        get { return isInInteraction; }
     }
 
-    public void StartImageFillOverTime()
-    {
-        // Start the image fill coroutine
-        StartCoroutine(FillImageOverTimeCoroutine());
-    }
+    [SerializeField] Color interactionColor = new Color(1, 0.8392157f, 0.2509804f, 1);
 
-    private IEnumerator FillImageOverTimeCoroutine()
+    [SerializeField] Color defaultColor = Color.white;
+
+
+    public IEnumerator FillImageOverTimeCoroutine()
     {
         isFillComplete = false;
+        isInInteraction = true;
 
-        // Call ActivateButtonWithColor from UIInteractionManager
-        if (uiManager != null)
-        {
-            uiManager.ActivateButtonAndImageFillWithColor();
-        }
+        imageToFill.color = interactionColor;
+        imageFrame.color = interactionColor;
 
         while (timer < fillDuration)
         {
@@ -62,21 +59,18 @@ public class ImageFillOverTime : MonoBehaviour
         // Ensure the image is fully filled at the end
         imageToFill.fillAmount = targetFill;
         isFillComplete = true; // Mark the fill as complete
+        isInInteraction = false;
         StartCoroutine(ResetFillImageOverTime());
     }
 
-    IEnumerator ResetFillImageOverTime()
+    public IEnumerator ResetFillImageOverTime()
    {
         yield return new WaitForSeconds(delayBeforeDeactivate);
         timer = 0f;
         startFill = 0f;
         imageToFill.fillAmount = startFill;
 
-        if (uiManager != null)
-        {
-            uiManager.DectivateButtonAndImageFillWithColor();
-        }
+       imageToFill.color = defaultColor;
+        imageFrame.color = defaultColor;    
     }
-
-
 }

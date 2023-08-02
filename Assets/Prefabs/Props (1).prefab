@@ -105,6 +105,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3792284969662983188}
     m_Modifications:
+    - target: {fileID: 5321387460640634718, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
+      propertyPath: imageFrame
+      value: 
+      objectReference: {fileID: 6440248787474159267}
+    - target: {fileID: 5321387460640634718, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
+      propertyPath: imageToFill
+      value: 
+      objectReference: {fileID: 6440248787221783194}
     - target: {fileID: 7124570782679649540, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
       propertyPath: m_Colors.m_SelectedColor.b
       value: 0.2509804
