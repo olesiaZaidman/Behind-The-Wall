@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class ObjectSelector : MonoBehaviour
 {
-    [SerializeField] static GameObject selectedObject;
+   // static GameObject selectedObject;
     [SerializeField] Color defaultColor = Color.yellow;
     [SerializeField] Color colorSelected = Color.green;
 
@@ -23,6 +23,15 @@ public class ObjectSelector : MonoBehaviour
     MeshRenderer selectionMesh; 
 
     bool leftMouseClick;
+ //   static bool isSelected;
+    public static bool IsSelected { get; private set; }
+    //public static bool IsSelected
+    //{
+    //    get { return isSelected; }
+    //    private set { isSelected = value; }
+    //}
+
+
     void Start()
     {
         mainCamera = Camera.main;
@@ -35,7 +44,6 @@ public class ObjectSelector : MonoBehaviour
     {
         SelectAndHighlight();
     }
-
     void SelectAndHighlight()
     {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -47,51 +55,66 @@ public class ObjectSelector : MonoBehaviour
             ResetHighlightColor(DefaultColor);
             highlight = null;
         }
+       
+        CheckAndHandleRaycastHit(ray);
 
-
-        //  Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
-
-        if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out raycastHit)) //Make sure you have EventSystem in the hierarchy before using EventSystem
+        // Selection
+        if (leftMouseClick && IsNotPointerOverGameObject())
         {
+            HandleSelection();       
+        }
+    }
+
+    private bool IsNotPointerOverGameObject()
+    {
+        return !EventSystem.current.IsPointerOverGameObject();
+    }
+
+    void CheckAndHandleRaycastHit(Ray ray)
+    {
+        if (IsNotPointerOverGameObject() && Physics.Raycast(ray, out raycastHit)) //Make sure you have EventSystem in the hierarchy before using EventSystem
+        {
+            //assign the Transform component of the object that has been hit by the raycast to the highlight variable:
+            //  Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
             highlight = raycastHit.transform;
 
             if (highlight.CompareTag("Selectable") && highlight != selection)
             {
                 SetHighlightColorIfNeeded(ColorSelected);
-
             }
             else
             {
                 highlight = null;
-            }
-        }
-
-        // Selection
-        if (leftMouseClick && !EventSystem.current.IsPointerOverGameObject())
-        {
-            if (highlight)
-            {
-                if (selection != null)
-                {
-                    ResetSelectionColor(DefaultColor);
-                }
-
-                selection = raycastHit.transform;
-
-                SetSelectionColorIfNeeded(ColorSelected);
-                highlight = null;
-            }
-            else
-            {
-                if (selection)
-                {
-                    ResetSelectionColor(DefaultColor);
-
-                    selection = null;
-                }
             }
         }
     }
+
+    void HandleSelection()
+    {
+        if (highlight)
+        {
+            if (selection != null)
+            {
+                ResetSelectionColor(DefaultColor);
+            }
+            //assign the Transform component of the object that has been hit by the raycast to the selection variable:
+            selection = raycastHit.transform;
+
+            IsSelected = true; // Set isSelected to true when an object is selected
+            SetSelectionColorIfNeeded(ColorSelected);
+            highlight = null;
+        }
+        else
+        {
+            if (selection)
+            {
+                ResetSelectionColor(DefaultColor);
+                selection = null;
+                IsSelected = false; // Set isSelected to false when the selection is reset
+            }
+        }
+    }
+
 
     void SetSelectionColorIfNeeded(Color color)
     {
