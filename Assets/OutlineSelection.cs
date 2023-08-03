@@ -8,7 +8,6 @@ public class OutlineSelection : MonoBehaviour
     private Transform selection;
     private RaycastHit raycastHit;
 
-
     [SerializeField] Color colorOutlineSelected = Color.white;
     public Color ColorOutlineSelected => colorOutlineSelected;
     float outlineWidth = 6f;
@@ -36,14 +35,14 @@ public class OutlineSelection : MonoBehaviour
         // Highlight
         if (highlight != null)
         {
-            highlight.gameObject.GetComponent<Outline>().enabled = false;
+            ToggleOutlineFunctionality(highlight?.gameObject, false);
             highlight = null;
         }
-      
-        if (IsNotPointerOverUIElement()) 
-            //Make sure you have EventSystem in the hierarchy before using EventSystem
+
+        if (IsNotPointerOverUIElement())
+        //We need to have EventSystem in the hierarchy before using EventSystem
         {
-            HandleHighlightOnCheckRaycastHit(ray,tagSelectable, ColorOutlineSelected, outlineWidth);         
+            HandleHighlightOnCheckRaycastHit(ray, tagSelectable, ColorOutlineSelected, outlineWidth);
         }
 
         // Selection
@@ -57,21 +56,21 @@ public class OutlineSelection : MonoBehaviour
     {
         if (highlight)
         {
-            if (selection != null)
-            {
-                selection.gameObject.GetComponent<Outline>().enabled = false;
-            }
+
+            ToggleOutlineFunctionality(selection?.gameObject, false);
             selection = raycastHit.transform;
-            selection.gameObject.GetComponent<Outline>().enabled = true;
+            ToggleOutlineFunctionality(selection?.gameObject, true);
             highlight = null;
+
+            /*In this context, selection?.gameObject means that if selection is not null, 
+             * it will access the gameObject property of selection. If selection is null, 
+             * the whole expression will result in null, and the method ToggleOutlineFunctionality
+             *  will be called with a null argument.*/
         }
         else
         {
-            if (selection)
-            {
-                selection.gameObject.GetComponent<Outline>().enabled = false;
-                selection = null;
-            }
+            ToggleOutlineFunctionality(selection?.gameObject, false);
+            selection = null;
         }
     }
 
@@ -83,16 +82,12 @@ public class OutlineSelection : MonoBehaviour
 
             if (highlight.CompareTag(tagSelectable) && highlight != selection)
             {
-                if (highlight.gameObject.GetComponent<Outline>() != null)
+                ToggleOutlineFunctionality(highlight?.gameObject, true);
+
+                if (highlight?.GetComponent<Outline>() == null)
                 {
-                    highlight.gameObject.GetComponent<Outline>().enabled = true;
-                }
-                else
-                {
-                    Outline outline = highlight.gameObject.AddComponent<Outline>();
-                    outline.enabled = true;
-                    highlight.gameObject.GetComponent<Outline>().OutlineColor = outlineColor;
-                    highlight.gameObject.GetComponent<Outline>().OutlineWidth = outlineWidth;
+                    AddEnabledOutlineComponent(highlight?.gameObject);
+                    SetColorWidthOfOutline(highlight?.gameObject, outlineColor, outlineWidth);
                 }
             }
             else
@@ -103,21 +98,50 @@ public class OutlineSelection : MonoBehaviour
         }
     }
 
-    void EnableOutlineIfNeeded(GameObject obj)
+    Outline AddEnabledOutlineComponent(GameObject obj)
     {
-
-
-
-        //if (obj.GetComponent<Outline>() != null)
-        //{
-        //    obj.GetComponent<Outline>().enabled = true;
-        //}
-        //else
-        //{
-        //    Outline outline = obj.AddComponent<Outline>();
-        //    outline.enabled = true;
-        //    outline.OutlineColor = ColorOutlineSelected;
-        //    outline.OutlineWidth = outlineWidth;
-        //}
+        Outline outline = obj.AddComponent<Outline>();
+        outline.enabled = true;
+        return outline;
     }
+
+    void ToggleOutlineFunctionality(GameObject obj, bool enable)
+    {
+        var outline = obj?.GetComponent<Outline>();
+
+        if (outline != null)
+        {
+            outline.enabled = enable;
+        }
+    }
+
+    void SetColorWidthOfOutline(GameObject obj, Color outlineColor, float outlineWidth)
+    {
+        var outline = obj?.GetComponent<Outline>();
+
+        if (outline != null)
+        {
+            outline.OutlineColor = outlineColor;
+            outline.OutlineWidth = outlineWidth;
+        }
+    }
+
+    /*
+null-conditional operator (?.)  is used to safely access members (properties, methods, and fields) 
+of an object when that object might be null. It prevents a NullReferenceException from being thrown 
+if the object is null.
+
+obj?.GetComponent<Outline>() means that if obj is null or does not have an Outline component attached to it,
+outline will be assigned null.Otherwise, outline will hold a reference to the Outline component attached to obj.
+*/
+
+
+
+    //void EnableOutlineFunctionalityIfNeeded(GameObject obj, bool enable)
+    //{
+    //    obj.GetComponent<Outline>().enabled = enable;
+    //}
+
+
+
 }
