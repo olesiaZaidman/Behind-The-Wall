@@ -21,11 +21,11 @@ public class ImageFillOverTime : MonoBehaviour
         get { return isFillComplete; }
     }
 
-    bool isInInteraction = false; // New property to indicate fill completion
+    bool isClicked = false; // New property to indicate fill completion
 
-    public bool IsInInteraction
+    public bool IsClicked
     {
-        get { return isInInteraction; }
+        get { return isClicked; }
     }
 
     [SerializeField] Color interactionColor = new Color(1, 0.8392157f, 0.2509804f, 1);
@@ -36,10 +36,10 @@ public class ImageFillOverTime : MonoBehaviour
     public IEnumerator FillImageOverTimeCoroutine()
     {
         isFillComplete = false;
-        isInInteraction = true;
+        isClicked = true;
 
-        imageToFill.color = interactionColor;
-        imageFrame.color = interactionColor;
+     //   imageToFill.color = interactionColor;
+      //  imageFrame.color = interactionColor;
 
         while (timer < fillDuration)
         {
@@ -59,7 +59,8 @@ public class ImageFillOverTime : MonoBehaviour
         // Ensure the image is fully filled at the end
         imageToFill.fillAmount = targetFill;
         isFillComplete = true; // Mark the fill as complete
-        isInInteraction = false;
+        isClicked = false;
+        Debug.Log("Button interaction is complete");
         StartCoroutine(ResetFillImageOverTime());
     }
 
@@ -69,8 +70,8 @@ public class ImageFillOverTime : MonoBehaviour
         timer = 0f;
         startFill = 0f;
         imageToFill.fillAmount = startFill;
-
-       imageToFill.color = defaultColor;
-        imageFrame.color = defaultColor;    
+       
+        //   imageToFill.color = defaultColor;
+        //   imageFrame.color = defaultColor;    
     }
 }

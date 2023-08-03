@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -15,6 +12,17 @@ public class ButtonClickHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
     [System.Serializable]
     public class CustomUIEvent : UnityEvent { } //using UnityEngine.Events;
     public CustomUIEvent OnUiEvent;
+
+
+    /* OnPointerClick uses Unity’s event system, OnMouseDown uses the physics engine. 
+     * Therefore, OnMouseDown is generally better suited for gameplay controls than for UI. 
+     * OnPointerClick should work best with the UI since it relies on EventSystem and 
+     * should help you with clicking through objects etc. 
+     * You won’t need a Collider for OnPointerClick, but you will for OnMouseDown.*/
+
+
+    /*BUG ; Color change yellow-white  -is broken*/
+
     PlayerController playerController;
     ImageFillOverTime imageFillOverTime;
 
@@ -40,6 +48,8 @@ public class ButtonClickHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     bool isAbort = false;
 
+    public static bool isChangingColor = false;
+
     void Start()
     {
         transform.localScale = defaultSize;
@@ -50,8 +60,6 @@ public class ButtonClickHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
         {
             imageFillOverTime = GetComponentInParent<ImageFillOverTime>();
         }
-
-        // myButton.onClick.AddListener(OnButtonClick);
     }
 
     void Update()
@@ -60,53 +68,67 @@ public class ButtonClickHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
         {
             StopActivateButtonAnimation();
         }
-        //if (Input.GetKeyDown(KeyCode.S))
-        //{
-        //    playerController.IsPerformingAction = true;
-        //}
     }
 
-    public void StopAllCoroutinesInList()
-    {
-        for (int i = 0; i < coroutines.Count; i++)
-        {
-            if (coroutines[i] != null)
-            {
-                StopCoroutine(coroutines[i]);
-                coroutines[i] = null;
-            }
-        }
-        coroutines.Clear();
-        /*   arr.forEach(Couroutine c =>
-        {
-            StopCoroutine(c);
-        });*/
-    }
+    /*
+     1. OnPointerEnter > if (!imageFillOverTime.IsClicked)> if(!isChangingColor)>  AnimateHoverButton  &&  isChangingColor = true
+       
+     2. OnPointerExit > if (!imageFillOverTime.IsClicked) > if(isChangingColor) > RestoreColorButton   
+     3.  OnPointerEnter > if (!imageFillOverTime.IsClicked)> AnimateHoverButton  
+
+     4. OnPointerClick > StartActivateButtonAnimation>:
+     -  if (!imageFillOverTime.IsClicked) > AnimateClickButton 
+        
+     - FillImageOverTimeCoroutine >   isClicked = true;
+      - DeselectButtonCoroutine(isAbort)));  >   isClicked = false;
+    -  if (!imageFillOverTime.IsClicked) > RestoreButton()   
 
 
-    //void OnButtonClick() //same as OnPointerClick?
-    //{
+         5. OnPointerExit > RestoreColorButton   if (!imageFillOverTime.IsClicked)
 
-    //}
+   6* Anymoment. StopActivateButtonAnimation > :
+    - if (imageFillOverTime.IsClicked) > ResetFillImageOverTime 
+  - RestoreButton  if (!imageFillOverTime.IsClicked)
+  -DeselectButtonCoroutine(isAbort)
+   - isAbort = false;
+
+
+
+RestoreButton(): ColorTransition & ScaleTransition
+ RestoreSizeButton(): ScaleTransition
+  RestoreColorButton(): ColorTransition
+
+*/
+
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         //  Debug.Log("Entered");
-        if (!imageFillOverTime.IsInInteraction)
+        if (!imageFillOverTime.IsClicked)
         {
             StopAllCoroutinesInList();
+            coroutines.Add(StartCoroutine(AnimateHoverButton(newSize, interactionColor, transitionTime)));
         }
-        coroutines.Add(StartCoroutine(AnimateHoverButton()));
+
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         //  Debug.Log("Exited");
-        if (!imageFillOverTime.IsInInteraction)
+        if (!imageFillOverTime.IsClicked)
         {
             StopAllCoroutinesInList();
+
         }
-        coroutines.Add(StartCoroutine(RestoreButton()));
+
+        if (!imageFillOverTime.IsClicked)
+        {
+            coroutines.Add(StartCoroutine(RestoreColorButton(defaultColor, transitionTime)));
+            /*we have balagan with colors clicks and resets :(*/
+        }
+
+        coroutines.Add(StartCoroutine(RestoreSizeButton(defaultSize, transitionTime)));
+
     }
 
 
@@ -115,91 +137,104 @@ public class ButtonClickHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
         StartActivateButtonAnimation();
     }
 
+    void StartActivateButtonAnimation()
+    {
+        StopAllCoroutinesInList();
+
+        if (!imageFillOverTime.IsClicked && !isChangingColor)
+        {
+            coroutines.Add(StartCoroutine(AnimateClickButton(superSize, interactionColor, transitionTime)));
+            isChangingColor = true;
+        }
+
+        //if (isChangingColor)
+        //{
+        coroutines.Add(StartCoroutine(imageFillOverTime.FillImageOverTimeCoroutine()));     //OR coroutines.Add(StartCoroutine(StartSearchingAnimation()));
+        coroutines.Add(StartCoroutine(DeselectButtonCoroutine(isAbort)));
+        /*Should we unite RestoreButton & DeselectButtonCoroutine?*/
+
+        if (!isChangingColor) // &&!imageFillOverTime.IsClicked && !isChangingColor
+        {
+            coroutines.Add(StartCoroutine(RestoreButton(defaultSize, defaultColor, transitionTime)));
+
+        }
+      // Debug.Log("Clicked - works only when script is attached to the Button");}
+
+        // }
+
+
+    }
+
+
     public void StopActivateButtonAnimation()
     {
         StopAllCoroutinesInList();
         isAbort = true;
 
-        if (imageFillOverTime.IsInInteraction)
+        if (imageFillOverTime.IsClicked)
         {
             coroutines.Add(StartCoroutine(imageFillOverTime.ResetFillImageOverTime()));
         }
 
-        coroutines.Add(StartCoroutine(RestoreButton())); /*Should we unite RestoreButton & DeselectButtonCoroutine?*/
+        coroutines.Add(StartCoroutine(RestoreButton(defaultSize, defaultColor, transitionTime))); /*Should we unite RestoreButton & DeselectButtonCoroutine?*/
         coroutines.Add(StartCoroutine(DeselectButtonCoroutine(isAbort)));
-
+        // isChangingColor = false;
         isAbort = false;
-
     }
+
+
 
     private IEnumerator DeselectButtonCoroutine(bool abort) //DeselectButtonCoroutine
     {
         //  yield return new WaitUntil(() => imageFillOverTime.IsFillComplete);
         yield return new WaitUntil(() => imageFillOverTime.IsFillComplete || abort);
 
-        playerController.IsPerformingAction = false;
+        //  playerController.IsPerformingAction = false;
         //Deselect the button:
         EventSystem.current.SetSelectedGameObject(null);
     }
 
 
-    void StartActivateButtonAnimation()
-    {
-        StopAllCoroutinesInList();
-        coroutines.Add(StartCoroutine(AnimateClickButton()));
-
-        coroutines.Add(StartCoroutine(imageFillOverTime.FillImageOverTimeCoroutine()));     //OR coroutines.Add(StartCoroutine(StartSearchingAnimation()));
-        coroutines.Add(StartCoroutine(DeselectButtonCoroutine(isAbort)));
-        /*Should we unite RestoreButton & DeselectButtonCoroutine?*/
-        if (!imageFillOverTime.IsInInteraction)
-        {
-            coroutines.Add(StartCoroutine(RestoreButton()));
-        }
-        // Debug.Log("Clicked - works only when script is attached to the Button");}
-
-   
-    }
-
-    //private IEnumerator StartSearchingAnimation()  //bool isAction
-    //{
-    //    yield return new WaitUntil(() => playerController.IsPerformingAction);
-
-    //    coroutines.Add(StartCoroutine(imageFillOverTime.FillImageOverTimeCoroutine()));
-    //    coroutines.Add(StartCoroutine(DeselectButtonCoroutine(isAbort)));
-    //    /*Should we unite RestoreButton & DeselectButtonCoroutine?*/
-    //    if (!imageFillOverTime.IsInInteraction)
-    //    {
-    //        coroutines.Add(StartCoroutine(RestoreButton()));
-    //    }
-    //    // Debug.Log("Clicked - works only when script is attached to the Button");}
-
-    //}
-
-
-
-
-    public IEnumerator RestoreButton()
+    public IEnumerator RestoreButton(Vector3 newSize, Color newColor, float transitionTime)
     {
         yield return new WaitForEndOfFrame();
-        StartCoroutine(AnimationTransition(defaultSize, defaultColor, transitionTime));
+        //   StartCoroutine(AnimationTransition(defaultSize, defaultColor, transitionTime));
+        StartCoroutine(ColorTransition(newColor, transitionTime));
+        StartCoroutine(ScaleTransition(newSize, transitionTime));
     }
 
-    public IEnumerator AnimateHoverButton()
+    public IEnumerator RestoreSizeButton(Vector3 newSize, float transitionTime)
     {
-        if (!imageFillOverTime.IsInInteraction)
-        {
-            yield return new WaitForEndOfFrame();
-            StartCoroutine(AnimationTransition(newSize, interactionColor, transitionTime));
-        }
+        yield return new WaitForEndOfFrame();
+        StartCoroutine(ScaleTransition(newSize, transitionTime));
+    }
+    public IEnumerator RestoreColorButton(Color newColor, float transitionTime)
+    {
+        yield return new WaitForEndOfFrame();
+        StartCoroutine(ColorTransition(newColor, transitionTime));
     }
 
-    public IEnumerator AnimateClickButton()
+
+    public IEnumerator AnimateHoverButton(Vector3 newSize, Color newColor, float transitionTime)
     {
-        if (!imageFillOverTime.IsInInteraction)
-        {
-            yield return new WaitForEndOfFrame(); // yield return StartCoroutine(AnimationTransition(superSize, interactionColor, transitionTime));
-            StartCoroutine(AnimationTransition(superSize, interactionColor, transitionTime));
-        }
+        //  if (!imageFillOverTime.IsClicked)
+        // {
+        yield return new WaitForEndOfFrame();
+        //  StartCoroutine(AnimationTransition(newSize, interactionColor, transitionTime));
+        StartCoroutine(ColorTransition(newColor, transitionTime));
+        StartCoroutine(ScaleTransition(newSize, transitionTime));
+        // }
+    }
+
+    public IEnumerator AnimateClickButton(Vector3 newSize, Color newColor, float transitionTime)
+    {
+        //  if (!imageFillOverTime.IsClicked)
+        //   {
+        yield return new WaitForEndOfFrame(); // yield return StartCoroutine(AnimationTransition(superSize, interactionColor, transitionTime));
+                                              //  StartCoroutine(AnimationTransition(superSize, interactionColor, transitionTime));
+        StartCoroutine(ColorTransition(newColor, transitionTime));
+        StartCoroutine(ScaleTransition(newSize, transitionTime));
+        //  }
     }
 
 
@@ -239,7 +274,7 @@ public class ButtonClickHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
         // Start the color transition
         yield return StartCoroutine(ColorTransition(newColor, transitionTime));
 
-        Debug.Log("Transitions complete!");
+     //   Debug.Log("Transitions complete!");
 
     }
 
@@ -267,6 +302,8 @@ public class ButtonClickHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
         Color startColorFrame = imageFrame.color;
         Color startColorFill = imageToFill.color;
 
+      //  Debug.Log("isChangedColor: " + isChangingColor);
+
         while (timer < transitionTime)
         {
             timer += Time.deltaTime;
@@ -276,10 +313,27 @@ public class ButtonClickHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
             imageFrame.color = Color.Lerp(startColorFrame, newColor, timer / transitionTime);
             imageToFill.color = Color.Lerp(startColorFill, newColor, timer / transitionTime);
         }
+
     }
 
+    public void StopAllCoroutinesInList()
+    {
+        for (int i = 0; i < coroutines.Count; i++)
+        {
+            if (coroutines[i] != null)
+            {
+                StopCoroutine(coroutines[i]);
+                coroutines[i] = null;
+            }
+        }
+        coroutines.Clear();
+        /*   arr.forEach(Couroutine c =>
+        {
+            StopCoroutine(c);
+        });*/
+    }
 
-        public void DeactivateButton()
+    public void DeactivateButton()
     {
         myButton.interactable = false;
     }

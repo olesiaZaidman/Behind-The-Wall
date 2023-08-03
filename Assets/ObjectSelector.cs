@@ -1,141 +1,140 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 
 public class ObjectSelector : MonoBehaviour
 {
-    public static GameObject selectedObject;
-
+    [SerializeField] static GameObject selectedObject;
     [SerializeField] Color defaultColor = Color.yellow;
     [SerializeField] Color colorSelected = Color.green;
 
-    Renderer rend;
-    [SerializeField] bool selected = false;
-     int playerLayer = 1;
+    Camera mainCamera;
 
-    [SerializeField] bool isSwitch;
+    public Color DefaultColor => defaultColor;
 
-    // public const int PLAYERLAYER = 1;
+    public Color ColorSelected => colorSelected;
+   
+    private Transform highlight;
+    private Transform selection;
+    private RaycastHit raycastHit;
 
-    public int PlayerLayer
-    {
-        get { return playerLayer; }
-    }
+    MeshRenderer highlightMesh; 
+    MeshRenderer selectionMesh; 
 
-    public bool Selected
-    {
-        get { return selected; }
-        set
-        {
-            selected = value;
-            SetGameObjectColor(selected ? colorSelected : defaultColor);
-        }
-    }
-
-    public Color DefaultColor
-    {
-        get { return defaultColor; }
-    }
-
-    public Color ColorSelected
-    {
-        get { return colorSelected; }
-    }
-
-
+    bool leftMouseClick;
     void Start()
     {
-        rend = GetComponent<Renderer>();
-        SetGameObjectColor(defaultColor);
-        AssignLayerToPlayer(playerLayer);
-        isSwitch = false;
-    }
-
-     void OnMouseDown()
-    {
-        // Toggle the selection state
-        selected = !selected;
-
-        if (selected)
-        {
-            // ActivateButtonWithInteractionColor the object
-            SetGameObjectColor(colorSelected);
-        }
-        else
-        {
-            // DectivateButtonDeafultWithColor the object
-            SetGameObjectColor(defaultColor);
-        }
+        mainCamera = Camera.main;
+        highlightMesh = null;
+        selectionMesh = null;
     }
 
 
-    public void SetGameObjectColor(Color color)
+    void Update()
     {
-        if (rend != null)
-        {
-            rend.material.color = color;
-        }
+        SelectAndHighlight();
     }
 
-    public void Deselect()
+    void SelectAndHighlight()
     {
-        Debug.Log("Should we desselect?: "+ selected);
-        if (selected && !isSwitch)
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        leftMouseClick = Input.GetMouseButtonDown(0);
+
+        // Highlight
+        if (highlight != null)
         {
-            isSwitch = true;
-            Debug.Log("Object Deselected!");
-            selected = false;
-            SetGameObjectColor(defaultColor);
+            ResetHighlightColor(DefaultColor);
+            highlight = null;
         }
 
+
+        //  Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
+
+        if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out raycastHit)) //Make sure you have EventSystem in the hierarchy before using EventSystem
+        {
+            highlight = raycastHit.transform;
+
+            if (highlight.CompareTag("Selectable") && highlight != selection)
+            {
+                SetHighlightColorIfNeeded(ColorSelected);
+
+            }
+            else
+            {
+                highlight = null;
+            }
+        }
+
+        // Selection
+        if (leftMouseClick && !EventSystem.current.IsPointerOverGameObject())
+        {
+            if (highlight)
+            {
+                if (selection != null)
+                {
+                    ResetSelectionColor(DefaultColor);
+                }
+
+                selection = raycastHit.transform;
+
+                SetSelectionColorIfNeeded(ColorSelected);
+                highlight = null;
+            }
+            else
+            {
+                if (selection)
+                {
+                    ResetSelectionColor(DefaultColor);
+
+                    selection = null;
+                }
+            }
+        }
     }
 
-    //public void AssignLayerToGameObject(GameObject gameObject, int layer)
-    //{
-    //    gameObject.layer = layer;
-    //}
-
-    void AssignLayerToPlayer(int layer)
+    void SetSelectionColorIfNeeded(Color color)
     {
-        gameObject.layer = layer;
+        if (GetSelectionMesh().material.color != color)
+        {
+            GetSelectionMesh().material.color = color;
+        }
     }
 
-    //void OnMouseDown()
-    //{
-    //    if (selectedObject != gameObject)
-    //    {
-    //        // DectivateButtonDeafultWithColor the current object (if any)
-    //        DeselectCurrentObject();
+    void ResetSelectionColor(Color color)
+    {
+        GetSelectionMesh().material.color = color;
+    }
 
-    //        // ActivateButtonWithInteractionColor the clicked object
-    //        selectedObject = gameObject;
-    //        SetGameObjectColor(colorSelected);
-    //    }
-    //}
+    void SetHighlightColorIfNeeded(Color color)
+    {
+        if (GetHighlightMesh().material.color != color)
+        {
+            GetHighlightMesh().material.color = color;
+        }
+    }
 
-    //public void DectivateButtonDeafultWithColor()
-    //{
-    //    if (selectedObject == gameObject)
-    //    {
-    //        // DectivateButtonDeafultWithColor the object
-    //        selectedObject = null;
-    //        SetGameObjectColor(defaultColor);
-    //    }
-    //}
+    void ResetHighlightColor(Color color)
+    {
+        GetHighlightMesh().sharedMaterial.color = color;
+    }
 
-    //void DeselectCurrentObject()
-    //{
-    //    if (selectedObject != null)
-    //    {
-    //        selectedObject.GetComponent<ObjectSelector>().DectivateButtonDeafultWithColor();
-    //    }
-    //}
+    MeshRenderer GetHighlightMesh()
+    {
+        if (highlightMesh == null && highlight != null)
+        {
+            highlightMesh = highlight.GetComponent<MeshRenderer>();
+        }
+        return highlightMesh;
+    }
 
-    //void SetGameObjectColor(Color color)
-    //{
-    //    if (rend != null)
-    //    {
-    //        rend.material.color = color;
-    //    }
-    //}
+    MeshRenderer GetSelectionMesh()
+    {
+        if (selectionMesh == null && selection != null)
+        {
+            selectionMesh = selection.GetComponent<MeshRenderer>();
+        }
+        return selectionMesh;
+    }
+
 }

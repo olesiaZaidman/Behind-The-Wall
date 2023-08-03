@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
                 }
                 //else if (component is Renderer rendComponent)
                 //{
-                //    rend = rendComponent;
+                //    thisGameObjectRenderer = rendComponent;
                 //}
                 // We can add more conditions for other components if needed
                 // else if (component is YourComponentType yourComponent)
