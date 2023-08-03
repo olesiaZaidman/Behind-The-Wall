@@ -12,28 +12,22 @@ public class ObjectSelector : MonoBehaviour
     Camera mainCamera;
 
     public Color DefaultColor => defaultColor;
-
     public Color ColorSelected => colorSelected;
-   
-    private Transform highlight;
-    private Transform selection;
-    private RaycastHit raycastHit;
 
+    [SerializeField] Transform highlightOnHover; //when we just hover over object
+    [SerializeField] Transform selectionAfterClick; //when we click to select
+    RaycastHit raycastHit;
+    Ray ray;
     MeshRenderer highlightMesh; 
     MeshRenderer selectionMesh; 
 
     bool leftMouseClick;
- //   static bool isSelected;
     public static bool IsSelected { get; private set; }
-    //public static bool IsSelected
-    //{
-    //    get { return isSelected; }
-    //    private set { isSelected = value; }
-    //}
-
+    string tagSelectable;
 
     void Start()
     {
+        tagSelectable = "Selectable";
         mainCamera = Camera.main;
         highlightMesh = null;
         selectionMesh = null;
@@ -46,76 +40,85 @@ public class ObjectSelector : MonoBehaviour
     }
     void SelectAndHighlight()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         leftMouseClick = Input.GetMouseButtonDown(0);
-
-        // Highlight
-        if (highlight != null)
+       
+        if (highlightOnHover != null)
         {
             ResetHighlightColor(DefaultColor);
-            highlight = null;
+            highlightOnHover = null;
         }
-       
-        CheckAndHandleRaycastHit(ray);
 
-        // Selection
-        if (leftMouseClick && IsNotPointerOverGameObject())
+        if (IsNotPointerOverUIElement())
         {
-            HandleSelection();       
+            HandleHighlightOnCheckRaycastHit(ray, tagSelectable);  // Hover Highlight
+
+            HandleSelectionOnMouseClick();           // Click Selection
         }
+
     }
 
-    private bool IsNotPointerOverGameObject()
+    bool IsNotPointerOverUIElement()
     {
         return !EventSystem.current.IsPointerOverGameObject();
     }
 
-    void CheckAndHandleRaycastHit(Ray ray)
+    void HandleHighlightOnCheckRaycastHit(Ray ray, string tag)
     {
-        if (IsNotPointerOverGameObject() && Physics.Raycast(ray, out raycastHit)) //Make sure you have EventSystem in the hierarchy before using EventSystem
+        //Is Ray Hit?
+        if (Physics.Raycast(ray, out raycastHit)) //Make sure you have EventSystem in the hierarchy before using EventSystem
         {
-            //assign the Transform component of the object that has been hit by the raycast to the highlight variable:
-            //  Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
-            highlight = raycastHit.transform;
+             Debug.DrawRay(ray.origin, ray.direction * 10, Color.red);
 
-            if (highlight.CompareTag("Selectable") && highlight != selection)
+            //assign the Transform component of the object that has been hit by the raycast to the highlightOnHover variable:
+            highlightOnHover = raycastHit.transform;
+
+            if (highlightOnHover.CompareTag(tag) && highlightOnHover != selectionAfterClick)
             {
+              //  SaveStartColorFromMesh(GetHighlightMesh());
                 SetHighlightColorIfNeeded(ColorSelected);
             }
             else
             {
-                highlight = null;
+                highlightOnHover = null;
             }
         }
     }
 
-    void HandleSelection()
+    void HandleSelectionOnMouseClick()
     {
-        if (highlight)
+        if (leftMouseClick)
         {
-            if (selection != null)
+            if (highlightOnHover)
             {
-                ResetSelectionColor(DefaultColor);
+                if (selectionAfterClick != null)
+                {
+                    ResetSelectionColor(DefaultColor);
+                    selectionAfterClick = null;
+                }
+                //assign the Transform component of the object that has been hit by the raycast to the selectionAfterClick variable:
+                selectionAfterClick = raycastHit.transform;
+                IsSelected = true; // Set isSelected to true when an object is selected
+                SetSelectionColorIfNeeded(ColorSelected);
+                highlightOnHover = null;
             }
-            //assign the Transform component of the object that has been hit by the raycast to the selection variable:
-            selection = raycastHit.transform;
+            else
+            {
+                if (selectionAfterClick)
+                {
+                    ResetSelectionColor(DefaultColor);
+                    selectionAfterClick = null;
+                    IsSelected = false; // Set isSelected to false when the selectionAfterClick is reset
+                }
+            }
+        }
 
-            IsSelected = true; // Set isSelected to true when an object is selected
-            SetSelectionColorIfNeeded(ColorSelected);
-            highlight = null;
-        }
-        else
-        {
-            if (selection)
-            {
-                ResetSelectionColor(DefaultColor);
-                selection = null;
-                IsSelected = false; // Set isSelected to false when the selection is reset
-            }
-        }
     }
 
-
+    //void SaveStartColorFromMesh(MeshRenderer mesh)
+    //{
+    //    startColor = mesh.material.color;
+    //}
     void SetSelectionColorIfNeeded(Color color)
     {
         if (GetSelectionMesh().material.color != color)
@@ -144,18 +147,18 @@ public class ObjectSelector : MonoBehaviour
 
     MeshRenderer GetHighlightMesh()
     {
-        if (highlightMesh == null && highlight != null)
+        if (highlightMesh == null && highlightOnHover != null)
         {
-            highlightMesh = highlight.GetComponent<MeshRenderer>();
+            highlightMesh = highlightOnHover.GetComponent<MeshRenderer>();
         }
         return highlightMesh;
     }
 
     MeshRenderer GetSelectionMesh()
     {
-        if (selectionMesh == null && selection != null)
+        if (selectionMesh == null && selectionAfterClick != null)
         {
-            selectionMesh = selection.GetComponent<MeshRenderer>();
+            selectionMesh = selectionAfterClick.GetComponent<MeshRenderer>();
         }
         return selectionMesh;
     }

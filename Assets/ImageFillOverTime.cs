@@ -38,8 +38,8 @@ public class ImageFillOverTime : MonoBehaviour
         isFillComplete = false;
         isClicked = true;
 
-     //   imageToFill.color = interactionColor;
-      //  imageFrame.color = interactionColor;
+    //  imageToFill.color = interactionColor;
+ //  imageFrame.color = interactionColor;
 
         while (timer < fillDuration)
         {
@@ -71,7 +71,7 @@ public class ImageFillOverTime : MonoBehaviour
         startFill = 0f;
         imageToFill.fillAmount = startFill;
        
-        //   imageToFill.color = defaultColor;
+    //  imageToFill.color = defaultColor;
         //   imageFrame.color = defaultColor;    
     }
 }

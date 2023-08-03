@@ -1551,6 +1551,7 @@ GameObject:
   - component: {fileID: 373159299}
   - component: {fileID: 373159298}
   - component: {fileID: 373159301}
+  - component: {fileID: 373159302}
   m_Layer: 0
   m_Name: Player_Body
   m_TagString: Selectable
@@ -1679,6 +1680,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   colorSelected: {r: 0, g: 1, b: 0, a: 1}
+  highlightOnHover: {fileID: 0}
+  selectionAfterClick: {fileID: 0}
+--- !u!114 &373159302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373159293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 487f50c8c32f08646bf7e00675769155, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &382850112
 GameObject:
   m_ObjectHideFlags: 0
@@ -6118,6 +6133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultColor: {r: 0.7735849, g: 0.41107205, b: 0.24375218, a: 1}
   colorSelected: {r: 0.16682512, g: 1, b: 0.0039215684, a: 1}
+  highlightOnHover: {fileID: 0}
+  selectionAfterClick: {fileID: 0}
 --- !u!1001 &1477253087
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8721,7 +8738,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8739237194768661213, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7fafb141ac47e74186a8b02eb1d296e, type: 3}

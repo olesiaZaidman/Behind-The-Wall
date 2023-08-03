@@ -141,10 +141,10 @@ RestoreButton(): ColorTransition & ScaleTransition
     {
         StopAllCoroutinesInList();
 
-        if (!imageFillOverTime.IsClicked && !isChangingColor)
+        if (!imageFillOverTime.IsClicked) // && !isChangingColor
         {
             coroutines.Add(StartCoroutine(AnimateClickButton(superSize, interactionColor, transitionTime)));
-            isChangingColor = true;
+          //  isChangingColor = true;
         }
 
         //if (isChangingColor)
@@ -153,11 +153,11 @@ RestoreButton(): ColorTransition & ScaleTransition
         coroutines.Add(StartCoroutine(DeselectButtonCoroutine(isAbort)));
         /*Should we unite RestoreButton & DeselectButtonCoroutine?*/
 
-        if (!isChangingColor) // &&!imageFillOverTime.IsClicked && !isChangingColor
-        {
-            coroutines.Add(StartCoroutine(RestoreButton(defaultSize, defaultColor, transitionTime)));
+     //   if (!imageFillOverTime.IsClicked) // &&!imageFillOverTime.IsClicked && !isChangingColor
+      //    {
+        coroutines.Add(StartCoroutine(RestoreButton(defaultSize, defaultColor, transitionTime)));
 
-        }
+     // }
       // Debug.Log("Clicked - works only when script is attached to the Button");}
 
         // }
@@ -300,7 +300,7 @@ RestoreButton(): ColorTransition & ScaleTransition
         float timer = 0;
         Color startColorButton = imageButton.color;
         Color startColorFrame = imageFrame.color;
-        Color startColorFill = imageToFill.color;
+       Color startColorFill = imageToFill.color;
 
       //  Debug.Log("isChangedColor: " + isChangingColor);
 
@@ -310,8 +310,8 @@ RestoreButton(): ColorTransition & ScaleTransition
             yield return null;
 
             imageButton.color = Color.Lerp(startColorButton, newColor, timer / transitionTime);
-            imageFrame.color = Color.Lerp(startColorFrame, newColor, timer / transitionTime);
-            imageToFill.color = Color.Lerp(startColorFill, newColor, timer / transitionTime);
+           imageFrame.color = Color.Lerp(startColorFrame, newColor, timer / transitionTime);
+          imageToFill.color = Color.Lerp(startColorFill, newColor, timer / transitionTime);
         }
 
     }
