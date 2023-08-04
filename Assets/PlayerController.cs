@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+
 using UnityEditor;
 using UnityEngine;
 
@@ -9,17 +6,17 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 500f; // Adjust this value to control the player's movementToClick speed
 
-    float moveHorizontal;
-    Vector3 targetPosition;
+  //  float moveHorizontal;
+  //  Vector3 targetPosition;
 
-    Vector3 movementToClick;
+  //  Vector3 movementToClick;
     Camera mainCamera;
-    Vector3 newpos;
-    Transform player;
-    Rigidbody rb;
+  //  Vector3 newpos;
+  //  Transform player;
+     Rigidbody rb;
 
-    RaycastHit raycastHit;
-    Ray ray;
+  //  RaycastHit raycastHit;
+  //  Ray ray;
 
     bool rightMouseClick;
     Vector3 mousePositionScreen;
@@ -119,33 +116,15 @@ public class PlayerController : MonoBehaviour
 
     float CheckYPosMousClick(float yPosClick)
     {
-        float groundFloormax = 0f;
-        float groundFloorYPos = -0.05f;
-
-        float firstFloormin = 0.71f;
-        float firstFloormax = 3.3f;
-        float firstFloorPos = 0.8f;
-
-        float secondFloormin = 3.8f;
-        float secondFloormax = 6f;
-        float secondFloorPos = 3.76f;
-
-        float thirdFloormin = 6.52f;
-        float thirdFloormax = 9f;
-        float thirdFloorPos = 6.73f;
-
-        if (yPosClick < groundFloormax)
-        { return groundFloorYPos; }
-
-        if (yPosClick > firstFloormin && yPosClick < firstFloormax)
-        { return firstFloorPos; }
-
-        if (yPosClick > secondFloormin && yPosClick < secondFloormax)
-        { return secondFloorPos; }
-
-        if (yPosClick > thirdFloormin && yPosClick < thirdFloormax)
-        { return thirdFloorPos; }
-        else return firstFloorPos;
+        foreach (var floorThreshold in FloorThreshold.floorThresholds)
+        {
+            if (yPosClick > floorThreshold.MinY && yPosClick < floorThreshold.MaxY)
+            {
+                return floorThreshold.YPosition;
+            }
+        }
+        // If the yPosClick does not fall within any floor thresholds, return a default value
+        return FloorThreshold.floorThresholds[0].YPosition; // default value 
     }
 
    
