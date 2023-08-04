@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -8,14 +11,19 @@ public class PlayerController : MonoBehaviour
 
     float moveHorizontal;
     Vector3 targetPosition;
-    Vector3 mousePositionScreen;
+
     Vector3 movementToClick;
     Camera mainCamera;
-
-
+    Vector3 newpos;
+    Transform player;
     Rigidbody rb;
 
+    RaycastHit raycastHit;
+    Ray ray;
 
+    bool rightMouseClick;
+    Vector3 mousePositionScreen;
+    Vector3 mousePositionWorld;
     bool isPerformingAction = false; // New property to indicate fill completion
 
     public bool IsPerformingAction
@@ -28,7 +36,6 @@ public class PlayerController : MonoBehaviour
     {
         FindCamera();
         InitializeComponent<Rigidbody>();
-
     }
 
     void FindCamera()
@@ -41,28 +48,116 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-    void Update()
+    void CalculateVector()
     {
+        rightMouseClick = Input.GetMouseButtonDown(1);
 
-        //  HandleMouseClickInput();
-          HandleArrowsInput();
-    }
+        if (rightMouseClick)
+        {
+            // Get the mouse position in screen coordinates
+             mousePositionScreen = Input.mousePosition;
+            // Create a ray from the camera through the mouse position
+            Ray ray = mainCamera.ScreenPointToRay(mousePositionScreen);
+            Debug.DrawRay(ray.origin, ray.direction * 10, Color.red);
+            float maxDistance = 100f;
+            LayerMask layerMask = LayerMask.GetMask("Stairs", "House", "Props"); // Replace "Layer1" and "Layer2" with the names of the layers you want to interact with.
+            LayerMask layerMaskGround = LayerMask.GetMask("Ground"); // Replace "Layer1" and "Layer2" with the names of the layers you want to interact with.
+   
 
-    void FixedUpdate()
-    {
-        //  MoveCharacterToMouseClick();
-        if (ObjectSelector.IsSelected)
-       {
-        MoveCharacter();
+            if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask))
+            {              
+                // Get the world position where the ray hits an object
+                 mousePositionWorld = hit.point;
+
+              //  Vector3 distance = mousePositionWorld - transform.position;
+                Debug.Log("Mouse Clicked at: " + mousePositionWorld);
+             //   Debug.Log("We hit: " + hit.collider.gameObject);
+             //   Debug.Log("Distance: " + distance);
+               MoveObjectToPosition(mousePositionWorld, false);
+            }
+
+            if (Physics.Raycast(ray, out RaycastHit hit2, maxDistance, layerMaskGround))
+            {
+                // Get the world position where the ray hits an object
+                mousePositionWorld = hit2.point;
+
+              //  Vector3 distance = mousePositionWorld - transform.position;
+                Debug.Log("Mouse Clicked at: " + mousePositionWorld);
+                //   Debug.Log("We hit: " + hit.collider.gameObject);
+                //   Debug.Log("Distance: " + distance);
+                MoveObjectToPosition(mousePositionWorld, true);
+            }
+            else
+            {
+                Debug.Log("No hit within the maxDistance or no hit on the specified layers");
+            }
         }
     }
 
-    void MoveCharacter()
+    void MoveObjectToPosition(Vector3 targetPosition, bool isGround)
     {
-        Vector3 movementToClick = new Vector3(moveHorizontal * moveSpeed * Time.deltaTime, rb.velocity.y, rb.velocity.z);
-        rb.velocity = movementToClick;
+        Vector3 newPos;
+        float zPosDefault = -1.052f;
+
+        if (isGround)
+        {
+             newPos = new Vector3(targetPosition.x, CheckYPosMousClick(targetPosition.y), targetPosition.z);
+        }
+        else         
+        {
+             newPos = new Vector3(targetPosition.x, CheckYPosMousClick(targetPosition.y), zPosDefault);
+        }
+
+        float speed = moveSpeed * Time.fixedDeltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, newPos, speed);
     }
+
+    void Update()
+    {
+        CalculateVector();
+    }
+
+    float CheckYPosMousClick(float yPosClick)
+    {
+        float groundFloormax = 0f;
+        float groundFloorYPos = -0.05f;
+
+        float firstFloormin = 0.71f;
+        float firstFloormax = 3.3f;
+        float firstFloorPos = 0.8f;
+
+        float secondFloormin = 3.8f;
+        float secondFloormax = 6f;
+        float secondFloorPos = 3.76f;
+
+        float thirdFloormin = 6.52f;
+        float thirdFloormax = 9f;
+        float thirdFloorPos = 6.73f;
+
+        if (yPosClick < groundFloormax)
+        { return groundFloorYPos; }
+
+        if (yPosClick > firstFloormin && yPosClick < firstFloormax)
+        { return firstFloorPos; }
+
+        if (yPosClick > secondFloormin && yPosClick < secondFloormax)
+        { return secondFloorPos; }
+
+        if (yPosClick > thirdFloormin && yPosClick < thirdFloormax)
+        { return thirdFloorPos; }
+        else return firstFloorPos;
+    }
+
+   
+    void FixedUpdate()
+    {
+        //if (rightMouseClick)
+     //   if (ObjectSelector.IsSelected)
+        //{
+        //    MoveObjectToPosition(mousePositionWorld);
+        //}
+    }
+
 
 
     void InitializeComponent<T>() where T : Component
@@ -94,48 +189,23 @@ public class PlayerController : MonoBehaviour
 
 
 
-    void HandleMouseClickInput()
-    {
-        //// Check for mouse click
-        //if (Input.GetMouseButton(1) && selected)
-        //{
-        //    // Get the mouse position in screen space
-        //    mousePositionScreen = Input.mousePosition;
+    //void HandleMouseClickInput()
+    //{
 
-        //    // Convert the mouse position to world space
-        //    targetPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition); //new Vector3(mousePositionScreen.x, mousePositionScreen.y, transform.position.z)
-        //    targetPosition.z = 0;
-        //}
-
-        //if (Input.GetMouseButton(0) && selected)
-        //{
-        //    SetGameObjectColor(defaultColor);
-        //    selected = false;
-        //}
-
-    }
+    //}
 
 
-    void MoveCharacterToMouseClick()
-    {
-        // Calculate the movementToClick vector towards the target position
-        //   movementToClick = new Vector3((targetPosition.x - transform.position.x) * 
-        //     moveSpeed * Time.fixedDeltaTime, rb.velocity.y, rb.velocity.z);
+    //void MoveCharacterToMouseClick()
+    //{
 
-        // Apply the movementToClick to the Rigidbody
-        //  rb.velocity = movementToClick;
-        float speed = moveSpeed * Time.fixedDeltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed);
-
-    }
+    //}
 
 
 
-
-    void HandleArrowsInput()
-    {
-        moveHorizontal = Input.GetAxis("Horizontal");
-    }
+    //void HandleArrowsInput()
+    //{
+    //    moveHorizontal = Input.GetAxis("Horizontal");
+    //}
 
 
 

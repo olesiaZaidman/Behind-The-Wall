@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4000010516736864}
   - component: {fileID: 33000013461803252}
   - component: {fileID: 23000011016533860}
-  m_Layer: 0
+  - component: {fileID: 2854059873928099575}
+  m_Layer: 10
   m_Name: Wall_Window_02c
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,9 +26,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000010660606342}
-  m_LocalRotation: {x: 0.0000000218557, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -62,7 +63,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: db2fe321a179f004c900f7b4a57fd117, type: 2}
-  - {fileID: 2100000, guid: db2fe321a179f004c900f7b4a57fd117, type: 2}
+  - {fileID: 2100000, guid: dde85cb802a71894ea519da1f2f63624, type: 2}
   - {fileID: 2100000, guid: 47722201f6342e647843184c588b2e29, type: 2}
   - {fileID: 2100000, guid: 47722201f6342e647843184c588b2e29, type: 2}
   - {fileID: 2100000, guid: 47722201f6342e647843184c588b2e29, type: 2}
@@ -89,3 +90,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2854059873928099575
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010660606342}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 2.9999995, z: 0.2419573}
+  m_Center: {x: 0, y: 1.4999993, z: 0.0012316518}

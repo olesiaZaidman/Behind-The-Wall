@@ -68,7 +68,7 @@ public class ObjectSelector : MonoBehaviour
         //Is Ray Hit?
         if (Physics.Raycast(ray, out raycastHit)) //Make sure you have EventSystem in the hierarchy before using EventSystem
         {
-             Debug.DrawRay(ray.origin, ray.direction * 10, Color.red);
+        //     Debug.DrawRay(ray.origin, ray.direction * 10, Color.red);
 
             //assign the Transform component of the object that has been hit by the raycast to the highlightOnHover variable:
             highlightOnHover = raycastHit.transform;

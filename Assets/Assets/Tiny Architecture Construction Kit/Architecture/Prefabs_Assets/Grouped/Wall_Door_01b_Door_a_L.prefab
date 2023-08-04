@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4000011456031020}
   - component: {fileID: 33000013390126174}
   - component: {fileID: 23000012276807220}
-  m_Layer: 0
+  - component: {fileID: 6151026632700856586}
+  m_Layer: 12
   m_Name: Wall_Door_01b_Door_a_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000010463931630}
-  m_LocalRotation: {x: 0.0000000218557, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -62,9 +63,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: 9eefdc043e8da6e4585fcef655be15cd, type: 2}
   - {fileID: 2100000, guid: db2fe321a179f004c900f7b4a57fd117, type: 2}
-  - {fileID: 2100000, guid: db2fe321a179f004c900f7b4a57fd117, type: 2}
-  - {fileID: 2100000, guid: db2fe321a179f004c900f7b4a57fd117, type: 2}
+  - {fileID: 2100000, guid: b55c75e5690a69e4e93bc6d7d275a3e8, type: 2}
   - {fileID: 2100000, guid: 47722201f6342e647843184c588b2e29, type: 2}
   - {fileID: 2100000, guid: 47722201f6342e647843184c588b2e29, type: 2}
   - {fileID: 2100000, guid: 47722201f6342e647843184c588b2e29, type: 2}
@@ -89,6 +90,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6151026632700856586
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010463931630}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.0000007, y: 2.999674, z: 0.21766575}
+  m_Center: {x: -0.000051021587, y: 1.499837, z: 0.0019486253}
 --- !u!1 &1000011670174768
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,7 +115,7 @@ GameObject:
   - component: {fileID: 33000012725148462}
   - component: {fileID: 23000012269623578}
   - component: {fileID: 95000013885133632}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Door_a_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,14 +129,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000011670174768}
-  m_LocalRotation: {x: 0.0000000218557, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.000000021855245, y: -0.008791355, z: 1.920712e-10, w: 0.9999614}
   m_LocalPosition: {x: -0.4, y: 0, z: 0.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4000011456031020}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -1.007, z: 0}
 --- !u!33 &33000012725148462
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -151,9 +165,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: db2fe321a179f004c900f7b4a57fd117, type: 2}
-  - {fileID: 2100000, guid: d1f72d5381d9bd54797ee08c743c2f53, type: 2}
-  - {fileID: 2100000, guid: db2fe321a179f004c900f7b4a57fd117, type: 2}
+  - {fileID: 2100000, guid: 9eefdc043e8da6e4585fcef655be15cd, type: 2}
+  - {fileID: 2100000, guid: 47722201f6342e647843184c588b2e29, type: 2}
+  - {fileID: 2100000, guid: 47722201f6342e647843184c588b2e29, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
