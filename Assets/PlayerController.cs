@@ -7,8 +7,8 @@ using UnityEngine.AI;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 500f; // Adjust this value to control the player's movementToClick speed
-    NavMeshAgent agent; 
-
+    NavMeshAgent agent;
+   // PlayerStairsMovement stairsMovement;
     Camera mainCamera;
     Rigidbody rb;
 
@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     Vector3 mousePositionScreen;
     Vector3 mousePositionWorld;
     bool isPerformingAction = false; // New property to indicate fill completion
+    private float moveHorizontal;
+
     public bool IsPerformingAction
     {
         get { return isPerformingAction; }
@@ -25,6 +27,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         FindCamera();
+       // stairsMovement = GetComponent<PlayerStairsMovement>();  
         InitializeComponent<Rigidbody>();
         InitializeComponent<NavMeshAgent>();
     }
@@ -54,7 +57,7 @@ public class PlayerController : MonoBehaviour
           //  float maxDistance = 100f;
             LayerMask layerMask = LayerMask.GetMask("House", "Props"); // Replace "Layer1" and "Layer2" with the names of the layers you want to interact with.
             LayerMask layerMaskGround = LayerMask.GetMask("Ground"); // Replace "Layer1" and "Layer2" with the names of the layers you want to interact with.
-            LayerMask layerMaskStairs = LayerMask.GetMask("Stairs");
+          //  LayerMask layerMaskStairs = LayerMask.GetMask("Stairs");
 
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
             {              
@@ -74,20 +77,20 @@ public class PlayerController : MonoBehaviour
                 mousePositionWorld = hit2.point;
                 Debug.Log("Mouse Clicked at: " + mousePositionWorld);
                 //   Debug.Log("We hit: " + hit.collider.gameObject);
-
+               
                MoveObjectToPosition(mousePositionWorld, true);
                
             }
 
-            if (Physics.Raycast(ray, out RaycastHit hit3, Mathf.Infinity, layerMaskStairs))
-            {
-                mousePositionWorld = hit3.point;
-                Debug.Log("Mouse Clicked at: " + mousePositionWorld);
-                //   Debug.Log("We hit: " + hit.collider.gameObject);
+            //if (Physics.Raycast(ray, out RaycastHit hit3, Mathf.Infinity, layerMaskStairs))
+            //{
+            //    mousePositionWorld = hit3.point;
+            //    Debug.Log("Mouse Clicked at: " + mousePositionWorld);
+            //    //   Debug.Log("We hit: " + hit.collider.gameObject);
+            //    PlayerStairsMovement.IsMovingOnStairs = true;
+            //    // UseStairs(mousePositionWorld, true);
 
-                MoveObjectToPositionIfStairs(mousePositionWorld, true);
-
-            }
+            //}
 
             else
             {
@@ -95,18 +98,18 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    void MoveObjectToPositionIfStairs(Vector3 targetPosition, bool isStairs)
-    {
-        Vector3 newPos;
-     //  float zPosDefault = -1.052f;
+    //void UseStairs(Vector3 targetPosition, bool isStairs)
+    //{
+    //    Vector3 newPos;
+    // //  float zPosDefault = -1.052f;
 
-        if (isStairs)
-        {
-            newPos = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
-            agent.SetDestination(newPos);
-        }
-        return;
-    }
+    //    if (isStairs)
+    //    {
+    //        newPos = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
+    //        agent.SetDestination(newPos);
+    //    }
+    //    return;
+    //}
     void MoveObjectToPosition(Vector3 targetPosition, bool isGround)
     {
         Vector3 newPos;
@@ -130,7 +133,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (PlayerStairsMovement.IsMovingOnStairs)
+        { return; }
         CalculateVectorOnMouseClick();
+        HandleArrowsInput();
     }
 
     float CheckYPosMousClick(float yPosClick)
@@ -149,11 +155,12 @@ public class PlayerController : MonoBehaviour
    
     void FixedUpdate()
     {
+        
         //if (rightMouseClick)
-     //   if (ObjectSelector.IsSelected)
-        //{
-        //    MoveObjectToPosition(mousePositionWorld);
-        //}
+        if (ObjectSelector.IsSelected)
+        {
+            MoveCharacter();
+        }
     }
 
 
@@ -198,12 +205,17 @@ public class PlayerController : MonoBehaviour
 
     //}
 
+    void MoveCharacter()
+    {
+        Vector3 movementToClick = new Vector3(moveHorizontal * moveSpeed * Time.deltaTime, rb.velocity.y, rb.velocity.z);
+        rb.velocity = movementToClick;
+    }
 
 
-    //void HandleArrowsInput()
-    //{
-    //    moveHorizontal = Input.GetAxis("Horizontal");
-    //}
+    void HandleArrowsInput()
+    {
+        moveHorizontal = Input.GetAxis("Horizontal");
+    }
 
 
 
