@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,23 +7,22 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 500f; // Adjust this value to control the player's movementToClick speed
 
-  //  float moveHorizontal;
-  //  Vector3 targetPosition;
+ float moveHorizontal;
+   Vector3 targetPosition;
 
-  //  Vector3 movementToClick;
+   Vector3 movementToClick;
     Camera mainCamera;
-  //  Vector3 newpos;
-  //  Transform player;
+  Vector3 newpos;
+ Transform player;
      Rigidbody rb;
 
-  //  RaycastHit raycastHit;
-  //  Ray ray;
+    RaycastHit raycastHit;
+   Ray ray;
 
     bool rightMouseClick;
     Vector3 mousePositionScreen;
     Vector3 mousePositionWorld;
     bool isPerformingAction = false; // New property to indicate fill completion
-
     public bool IsPerformingAction
     {
         get { return isPerformingAction; }
@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Camera is missing");
         }
     }
+
 
     void CalculateVector()
     {
@@ -116,7 +117,7 @@ public class PlayerController : MonoBehaviour
 
     float CheckYPosMousClick(float yPosClick)
     {
-        foreach (var floorThreshold in FloorThreshold.floorThresholds)
+        foreach (var floorThreshold in FloorThresholdManager.floorThresholds)
         {
             if (yPosClick > floorThreshold.MinY && yPosClick < floorThreshold.MaxY)
             {
@@ -124,7 +125,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         // If the yPosClick does not fall within any floor thresholds, return a default value
-        return FloorThreshold.floorThresholds[0].YPosition; // default value 
+        return FloorThresholdManager.floorThresholds[0].YPosition; // default value 
     }
 
    
