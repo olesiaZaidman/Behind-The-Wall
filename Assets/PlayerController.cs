@@ -2,22 +2,15 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 500f; // Adjust this value to control the player's movementToClick speed
+    NavMeshAgent agent; 
 
- float moveHorizontal;
-   Vector3 targetPosition;
-
-   Vector3 movementToClick;
     Camera mainCamera;
-  Vector3 newpos;
- Transform player;
-     Rigidbody rb;
-
-    RaycastHit raycastHit;
-   Ray ray;
+    Rigidbody rb;
 
     bool rightMouseClick;
     Vector3 mousePositionScreen;
@@ -33,6 +26,7 @@ public class PlayerController : MonoBehaviour
     {
         FindCamera();
         InitializeComponent<Rigidbody>();
+        InitializeComponent<NavMeshAgent>();
     }
 
     void FindCamera()
@@ -46,7 +40,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void CalculateVector()
+    void CalculateVectorOnMouseClick()
     {
         rightMouseClick = Input.GetMouseButtonDown(1);
 
@@ -57,12 +51,12 @@ public class PlayerController : MonoBehaviour
             // Create a ray from the camera through the mouse position
             Ray ray = mainCamera.ScreenPointToRay(mousePositionScreen);
             Debug.DrawRay(ray.origin, ray.direction * 10, Color.red);
-            float maxDistance = 100f;
-            LayerMask layerMask = LayerMask.GetMask("Stairs", "House", "Props"); // Replace "Layer1" and "Layer2" with the names of the layers you want to interact with.
+          //  float maxDistance = 100f;
+            LayerMask layerMask = LayerMask.GetMask("House", "Props"); // Replace "Layer1" and "Layer2" with the names of the layers you want to interact with.
             LayerMask layerMaskGround = LayerMask.GetMask("Ground"); // Replace "Layer1" and "Layer2" with the names of the layers you want to interact with.
-   
+            LayerMask layerMaskStairs = LayerMask.GetMask("Stairs");
 
-            if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask))
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
             {              
                 // Get the world position where the ray hits an object
                  mousePositionWorld = hit.point;
@@ -74,24 +68,45 @@ public class PlayerController : MonoBehaviour
                MoveObjectToPosition(mousePositionWorld, false);
             }
 
-            if (Physics.Raycast(ray, out RaycastHit hit2, maxDistance, layerMaskGround))
+            if (Physics.Raycast(ray, out RaycastHit hit2, Mathf.Infinity, layerMaskGround))
             {
                 // Get the world position where the ray hits an object
                 mousePositionWorld = hit2.point;
-
-              //  Vector3 distance = mousePositionWorld - transform.position;
                 Debug.Log("Mouse Clicked at: " + mousePositionWorld);
                 //   Debug.Log("We hit: " + hit.collider.gameObject);
-                //   Debug.Log("Distance: " + distance);
-                MoveObjectToPosition(mousePositionWorld, true);
+
+               MoveObjectToPosition(mousePositionWorld, true);
+               
             }
+
+            if (Physics.Raycast(ray, out RaycastHit hit3, Mathf.Infinity, layerMaskStairs))
+            {
+                mousePositionWorld = hit3.point;
+                Debug.Log("Mouse Clicked at: " + mousePositionWorld);
+                //   Debug.Log("We hit: " + hit.collider.gameObject);
+
+                MoveObjectToPositionIfStairs(mousePositionWorld, true);
+
+            }
+
             else
             {
                 Debug.Log("No hit within the maxDistance or no hit on the specified layers");
             }
         }
     }
+    void MoveObjectToPositionIfStairs(Vector3 targetPosition, bool isStairs)
+    {
+        Vector3 newPos;
+     //  float zPosDefault = -1.052f;
 
+        if (isStairs)
+        {
+            newPos = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
+            agent.SetDestination(newPos);
+        }
+        return;
+    }
     void MoveObjectToPosition(Vector3 targetPosition, bool isGround)
     {
         Vector3 newPos;
@@ -106,13 +121,16 @@ public class PlayerController : MonoBehaviour
              newPos = new Vector3(targetPosition.x, CheckYPosMousClick(targetPosition.y), zPosDefault);
         }
 
-        float speed = moveSpeed * Time.fixedDeltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, newPos, speed);
+        agent.SetDestination(newPos);
+
+
+      //  float speed = moveSpeed * Time.fixedDeltaTime;
+      //  transform.position = Vector3.MoveTowards(transform.position, newPos, speed);
     }
 
     void Update()
     {
-        CalculateVector();
+        CalculateVectorOnMouseClick();
     }
 
     float CheckYPosMousClick(float yPosClick)
@@ -154,10 +172,10 @@ public class PlayerController : MonoBehaviour
             {
                 rb = rbComponent;
             }
-            //else if (component is Renderer rendComponent)
-            //{
-            //    thisGameObjectRenderer = rendComponent;
-            //}
+            else if (component is NavMeshAgent agentComponent)
+            {
+                agent = agentComponent;
+            }
             // We can add more conditions for other components if needed
             // else if (component is YourComponentType yourComponent)
             // {
