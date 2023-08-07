@@ -19,14 +19,13 @@ public class PlayerStairsMovement : MonoBehaviour
     //{        
     //    agent = GetComponent<NavMeshAgent>();   
     //}
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
        // if (other.gameObject.layer == LayerMask.NameToLayer("Stairs"))
 
        if(other.gameObject.CompareTag("Stairs"))
         {
             Stairs stairsComponent = other.gameObject.GetComponent<Stairs>();
-
 
             if (stairsComponent != null)
             {

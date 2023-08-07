@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     Vector3 mousePositionScreen;
     Vector3 mousePositionWorld;
     bool isPerformingAction = false; // New property to indicate fill completion
-    private float moveHorizontal;
+    float moveHorizontal;
 
     public bool IsPerformingAction
     {
